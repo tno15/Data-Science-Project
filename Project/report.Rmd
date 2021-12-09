@@ -1,0 +1,64 @@
+---
+title: "Report"
+output: html_notebook
+---
+Intro:
+
+A lot of people who play video games talk about whether this character is getting buffed(More powerful) or nerfed(Less powerful), or whether a sequal is going to be good or is even going to come out in the first place, the "data" of video games so to speak.  But we don't really talk about how games are doing in terms of sales or how many games are in specific genre and such, the "metadata" of video games if you will.  And thus I got a little curious and chose this dataset.
+
+
+
+
+Importing the dataset:
+```{r}
+vgsales <- read.csv("../data/vgsales.csv")
+```
+
+Since tidyverse contains multiple fundamental R packages, such as ggplot2 for data visualization and dplyr for data manipulation, I personally do not feel the need to load them separately
+```{r}
+library(tidyverse)
+```
+
+Taking a "glimpse" at the dataset:
+```{r}
+glimpse(vgsales)
+```
+There were three things I was initially curious about when looking at this dataset.
+
+1. Which Publisher had the most in sales?
+2. Which year had the most in releases?
+3. What Genre was "most popular" in terms of releases?
+
+
+For question one, I grouped by publisher, then I summarised the data by summing up the global sales for each publisher from their respective games.
+```{r}
+total_sales_vg <- vgsales %>% group_by(Publisher) %>% summarise(totalsales = sum(Global_Sales)) %>% arrange(desc(totalsales))
+```
+This resulted in a dataset that that had almost 600 observations which is too much for a graph to handle, especially a bar graph.  So I filtered the dataset so that only publishers that had over 50 million in sales in total would appear.
+```{r}
+total_sales_vg_filtered <- total_sales_vg %>% filter(totalsales >= 50) %>% arrange(desc(totalsales))
+```
+This left me with a even 25 observations which is much more manageable
+```{r}
+ggplot(data = total_sales_vg_filtered) +
+  geom_col(aes(x = Publisher, y = totalsales)) + coord_flip()
+```
+But here I realized that there's a cleaner way to make these changes without using multiple chunks of code.  So all data manipulation will use one chunk of code from now on.
+
+
+Here I grouped by year and used the count function, however the original graph had data in years beyond 2016 which is a little strange considering that this dataset was last updated 5 years, so I omitted games that were released past 2016, including the games that had non-existent release dates, which included roughly 300 games
+```{r}
+vgsales %>% group_by(Name) %>% group_by(Year) %>% filter(Year <= 2016) %>% count() %>% ggplot() + geom_col(aes(x = Year, y = n)) + coord_flip()
+```
+
+Here I simply grouped by genre, nothing too special.
+```{r}
+vgsales %>% group_by(Genre) %>% count() %>% ggplot() + geom_col(aes(x = Genre, y = n)) + coord_flip()
+```
+Data analysis:
+For the first graph, it seems that Nintendo has most total sales.  Not surprising considering the success of the Wii.  In fact, one of first observations when using the function "head" or "glimpse", is "Wii Sports", published by Nintendo with a whopping 82.74 million sales.  For the second graph, it is interesting to see that 2008 and 2009 were the most active in terms of releases.  I can only assume that during this time, almost every single publisher was trying to get something out of the video game industry.  For the third graph, it's also not surprising Action is the most "popular" in terms of releases, considering the target demographic of video games.
+
+
+Conclusion: I have learned that Nintendo has the highest total sales, 2008 and 2009 were very active years in terms of releases, and that Action is the most "popular" genre in terms of releases.  One of the many things I would do next if I had more time, is to see if I could create the "prefect" video game title.  I create a whole point system that relates to the global sales for each common word.  Another thing I would do, is to see if each game sells better in their original publisher's region or area. For example, do Nintendo games have better sales in Japan than any other country, since Nintendo is based in Japan?
+
+

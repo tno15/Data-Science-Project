@@ -1,0 +1,13 @@
+---
+title: "Data Science"
+output: html_notebook
+---
+Questions:
+
+1. Which Publisher had the most in sales?
+2. Which year had the most in releases?
+3. What Genre was "most popular" in terms of releases?
+
+
+
+
