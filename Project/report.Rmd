@@ -41,19 +41,19 @@ total_sales_vg_filtered <- total_sales_vg %>% filter(totalsales >= 50) %>% arran
 This left me with a even 25 observations which is much more manageable
 ```{r}
 ggplot(data = total_sales_vg_filtered) +
-  geom_col(aes(x = Publisher, y = totalsales)) + coord_flip()
+  geom_col(aes(x = Publisher, y = totalsales), color = "cyan", fill = "cyan3") + coord_flip()
 ```
 But here I realized that there's a cleaner way to make these changes without using multiple chunks of code.  So all data manipulation will use one chunk of code from now on.
 
 
 Here I grouped by year and used the count function, however the original graph had data in years beyond 2016 which is a little strange considering that this dataset was last updated 5 years, so I omitted games that were released past 2016, including the games that had non-existent release dates, which included roughly 300 games
 ```{r}
-vgsales %>% group_by(Name) %>% group_by(Year) %>% filter(Year <= 2016) %>% count() %>% ggplot() + geom_col(aes(x = Year, y = n)) + coord_flip()
+vgsales %>% group_by(Name) %>% group_by(Year) %>% filter(Year <= 2016) %>% count() %>% ggplot() + geom_col(aes(x = Year, y = n), color = "yellow", fill = "yellow3") + coord_flip()
 ```
 
 Here I simply grouped by genre, nothing too special.
 ```{r}
-vgsales %>% group_by(Genre) %>% count() %>% ggplot() + geom_col(aes(x = Genre, y = n)) + coord_flip()
+vgsales %>% group_by(Genre) %>% count() %>% ggplot() + geom_col(aes(x = Genre, y = n, color = Genre, fill = Genre)) + coord_flip()
 ```
 Data analysis:
 For the first graph, it seems that Nintendo has most total sales.  Not surprising considering the success of the Wii.  In fact, one of first observations when using the function "head" or "glimpse", is "Wii Sports", published by Nintendo with a whopping 82.74 million sales.  For the second graph, it is interesting to see that 2008 and 2009 were the most active in terms of releases.  I can only assume that during this time, almost every single publisher was trying to get something out of the video game industry.  For the third graph, it's also not surprising Action is the most "popular" in terms of releases, considering the target demographic of video games.
